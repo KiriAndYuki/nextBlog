@@ -39,7 +39,7 @@ const LoginForm = () => {
     }));
     localStorage.setItem('yuki_token', token);
     resetForm();
-    router.push('/profile');
+    router.push(`/profile?id=${userId}`);
   };
 
   const handleSubmit = async () => {

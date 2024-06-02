@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { PrismaClient } from "@prisma/client";
 import { z } from 'zod';
 import { aesCrypto, myJWT } from '@/utils';
-import { cookies } from 'next/headers'
+import { cookies } from 'next/headers';
 
 const prisma = new PrismaClient();
 
@@ -146,10 +146,8 @@ export const login = async ({ account, password }) => {
 // lout
 
 export const logout = (token) => {
-  const {
-    err,
-  } = myJWT(token, 'de');
-  if (err) {
+  const parse = myJWT(token, 'de');
+  if (!parse) {
     return {
       code: 0,
       msg: 'logout error',

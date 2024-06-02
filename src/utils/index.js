@@ -108,7 +108,7 @@ export const myJWT = (msg, type = 'en') => {
       return decrypt;
     } catch (e) {
       console.log(e);
-      return e;
+      return false;
     }
   }
 };

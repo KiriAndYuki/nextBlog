@@ -19,11 +19,13 @@ const UserInfo = () => {
   const errId = 'logoutErr';
 
   const [hasLogin, setHasLogin] = useState(false);
+  const [id, setId] = useState('');
 
   useEffect(() => {
     if (typeof window !== undefined) {
       userInfo = JSON.parse(window.localStorage.getItem('userInfo') || `{}`);
       setHasLogin(userInfo?.userId ? true : false);
+      setId(userInfo?.userId);
     }
   });
 
@@ -31,6 +33,7 @@ const UserInfo = () => {
     localStorage.removeItem('userInfo');
     localStorage.removeItem('yuki_token');
     setHasLogin(false);
+    setId();
     router.replace('/');
   };
 
@@ -55,7 +58,7 @@ const UserInfo = () => {
         />
         <ul className="absolute left-[-1.2rem] bottom-[-7rem] flex-col items-center p-2 gap-y-1 bg-white dark:bg-black border border-stone-300 rounded-lg z-[9999] flex invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-500">
           <li className="cursor-pointer">
-            <NextLink href="/profile" className="hover:text-teal-400 duration-300">profile</NextLink>
+            <NextLink href={`/profile?id=${id}`} className="hover:text-teal-400 duration-300">profile</NextLink>
           </li>
           <li className="cursor-pointer">
             <NextLink href="/myOrders" className="hover:text-teal-400 duration-300">orders</NextLink>
