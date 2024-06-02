@@ -13,28 +13,59 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
-  content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
+enum Sex {
+  M
+  F
 }
 
 model Profile {
   id     Int     @id @default(autoincrement())
-  bio    String?
+  sex    Sex     
+  email String?  @db.VarChar(24)
+  desc   String?
   user   User    @relation(fields: [userId], references: [id])
+  userId Int     @unique
+}
+
+enum Subject {
+  MATH //数学
+  CHINESE  //语文
+  ENGLISH  //英语
+  HISTORY  //历史
+  POLITICS  //政治
+  PYSICAL  //物理
+  CHEMISTRY  //化学
+  BIOLOGY  //生物
+  GEOGRAPHY  //地理
+}
+
+enum Grade {
+  PRIMARY  //初中
+  SENIOR  //高中
+}
+
+enum OrderType {
+  TEACHER //老师发布
+  STUDENT //学生发布
+}
+
+model Order {
+  id Int   @id @default(autoincrement())
+  type OrderType
+  subject Subject
+  grade Grade
+  desc String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User   @relation(fields: [userId], references: [id])
   userId Int     @unique
 }
 
 model User {
   id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  posts   Post[]
+  account   String  @unique @db.VarChar(24)
+  password String @db.VarChar(18) @default("123456")
+  nickName    String  @db.VarChar(24)
   profile Profile?
+  orders  Order[]
 }

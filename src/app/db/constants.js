@@ -1,0 +1,5 @@
+// JWT key
+export const JWT_KEY = 'MY_PAGE_JWT_KEY_0029820542858901028';
+
+// cryptojs AES key
+export const AES_KEY = 'MY_II_AEC_KEY_908394827483573847298';

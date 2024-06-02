@@ -13,6 +13,9 @@
 /.next/
 /out/
 
+# prisma migrations
+# /prisma/migrations
+
 # production
 /build
 
