@@ -1,5 +1,4 @@
 
-import NextLink from 'next/link';
 import LoginForm from './loginForm';
 
 const LoginPage = () => {

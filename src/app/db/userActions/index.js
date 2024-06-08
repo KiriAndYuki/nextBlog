@@ -8,6 +8,7 @@ import { cookies } from 'next/headers';
 
 const prisma = new PrismaClient();
 
+// create user -> regist
 export const createUser = async ({ account, password }) => {
   const pwd = aesCrypto(password, 'de') || '';
   const userInfo = {
@@ -71,6 +72,7 @@ export const createUser = async ({ account, password }) => {
 };
 
 
+// login
 export const login = async ({ account, password }) => {
 
   const pwd = aesCrypto(password, 'de') || '';
@@ -143,8 +145,7 @@ export const login = async ({ account, password }) => {
   }
 };
 
-// lout
-
+// logout
 export const logout = (token) => {
   const parse = myJWT(token, 'de');
   if (!parse) {
@@ -158,5 +159,89 @@ export const logout = (token) => {
       code: 1,
       msg: 'logout success',
     };
+  }
+};
+
+// update profile or user
+export const updateProfile = async ({ userId, type, value, token }) => {
+  // JWT
+  const parseJWT = myJWT(token, 'de');
+  if (!parseJWT) {
+    return {
+      code: 0,
+      msg: 'user token error',
+    };
+  }
+  const valueZ = z.string();
+  
+  const parseParams = valueZ.safeParse(value);
+  if (!parseParams.success) {
+    return {
+      code: 0,
+      msg: 'info error!',
+    };
+  }
+
+  const data = parseParams.data;
+
+  if (type === 'nickName') {
+    // nickName -> update user table
+    try {
+      const user = await prisma.user.update({
+        where: {
+          id: Number(userId),
+        },
+        data: {
+          nickName: data,
+        },
+      });
+
+      revalidatePath('/profile');
+
+      return {
+        code: 1,
+        msg: 'profile updated!'
+      };
+    } catch (e) {
+      console.log('err in update-user: ', e);
+      return {
+        code: 0,
+        msg: 'DataBase error!'
+      };
+    }
+
+  } else {
+    // other type -> update profile table
+    const updateData = {
+      [type]: value,
+    };
+
+    console.log(updateData);  
+
+    try {
+      const user = await prisma.user.update({
+        where: {
+          id: Number(userId),
+        },
+        data: {
+          profile: {
+            update: updateData
+          },
+        }
+      });
+
+      revalidatePath('/profile');
+
+      return {
+        code: 1,
+        msg: 'profile updated!'
+      };
+    } catch (e) {
+      console.log('err in update-profile: ', e);
+      return {
+        code: 0,
+        msg: 'DataBase error!'
+      };
+    }
   }
 };

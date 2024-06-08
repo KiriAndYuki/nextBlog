@@ -39,7 +39,8 @@ const UserInfo = () => {
 
   const logOut = async () => {
     try {
-      const res = await logout();
+      const token = localStorage.getItem('yuki_token');
+      const res = await logout(token);
       responseToast(res, toastRef, toast, errId, afterLogout);
     } catch (e) {
       dbErrorToast(e, toast);

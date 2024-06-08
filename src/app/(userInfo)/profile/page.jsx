@@ -1,8 +1,10 @@
 'use server';
 import { PrismaClient } from "@prisma/client";
-import { myJWT } from '@/utils';
+import { myJWT, keyValToArr } from '@/utils';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { Button } from "@chakra-ui/react";
+import UpdateModal from './updateModal';
 
 const ProfilePage = async ({ searchParams }) => {
   const { id } = searchParams;
@@ -28,12 +30,21 @@ const ProfilePage = async ({ searchParams }) => {
     }
   });
 
-  console.log('info:  ', userInfo);
-
+  const infoList = keyValToArr(userInfo);
 
   return (
-    <div>
-      my profile page!
+    <div className="flex flex-col items-center pt-12">
+      <div className="mb-6 text-2xl">Your Profile:</div>
+      <UpdateModal infoList={infoList} userId={id} token={token} />
+      <Button
+        as="a"
+        href={`/updatePwd?id=${id}`}
+        colorScheme="teal"
+        mt={5}
+        width="66%"
+      >
+        update password
+      </Button>
     </div>
   );
 };

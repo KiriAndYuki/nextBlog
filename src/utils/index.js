@@ -1,14 +1,43 @@
 import { AES_KEY, JWT_KEY } from '@/app/db/constants';
 /*
+
+*/
+export const keyValToArr = (obj) => {
+
+  let mainArr = [];
+  Object.keys(obj).map(key => {
+    // obj
+    if (obj[key] && (typeof obj[key] === 'object')) {
+      //except null and undefine
+      mainArr = [
+        ...mainArr,
+        ...keyValToArr(obj[key]),
+      ];
+    } else {
+      //value
+      mainArr = [
+        ...mainArr,
+        {
+          key,
+          value: obj[key],
+        },
+      ];
+    }
+  });
+
+  return mainArr;
+};
+
+/*
 res: response data,
 ref: toast ref,
 toast: chakura toast instance
 toatId: toast error id
-resetForm: reset form function or you want to do some thing after success
+afterSuccess: reset form function or you want to do some thing after success
 
 return: void
 */
-export const responseToast = (res, ref, toast, toastId, resetForm) => {
+export const responseToast = (res, ref, toast, toastId, afterSuccess) => {
   if (res?.code) {
     // success
     toast({
@@ -18,7 +47,7 @@ export const responseToast = (res, ref, toast, toastId, resetForm) => {
       isClosable: true,
       position: 'top',
     });
-    resetForm(res);
+    afterSuccess(res);
   } else {
     // error
     if (!toast.isActive(toastId)) {
